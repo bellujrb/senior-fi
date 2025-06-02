@@ -73,9 +73,6 @@ export function BestOpportunities() {
                       <p className="text-sm text-muted-foreground">Risco (avaliado por IA)</p>
                       <div className="flex items-center gap-2">
                         <RiskIndicator score={opportunity.riskScore} />
-                        <span className="text-sm font-medium">
-                          {opportunity.riskScore <= 30 ? "Baixo" : opportunity.riskScore <= 70 ? "Médio" : "Alto"}
-                        </span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
