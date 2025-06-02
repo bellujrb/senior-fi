@@ -101,7 +101,7 @@ senior-fi
 ### Design Patterns
 - Component Pattern (clear separation of responsibilities)  
 - Provider Pattern (`theme-provider.tsx`)  
-- Modal Pattern (modais)  
+- Modal Pattern (modals)  
 - Layout Pattern (`layout.tsx` Next.js)  
 
 ### External Packages 
