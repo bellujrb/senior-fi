@@ -1,14 +1,10 @@
-## HackaNation.
-
----
-
 # SeniorFi: We connect investors with institutions that care for lives
 
 > _TEAM SeniorFi: HackaNation
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
-![Platform](https://img.shields.io/badge/Platform-Mobile-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Platform](https://img.shields.io/badge/Platform-Web-blue)
+![Blockchain](https://img.shields.io/badge/Blockchain-BNBChain-orange)
 
 ---
 
