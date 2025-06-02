@@ -18,12 +18,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ConnectWalletModal } from "@/components/connect-wallet-modal";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { NavigationMenuDemo } from "@/components/navigation-menu-demo";
+import { NavigationMenuView } from "./navigation-menu";
 
 export function NavBar() {
   const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState("");
-  const [balance, setBalance] = useState("0,00");
+  const [, setBalance] = useState("0,00");
   const [showWalletModal, setShowWalletModal] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -70,7 +70,7 @@ export function NavBar() {
               <span className="font-bold text-xl">SeniorFi</span>
             </Link>
             <div className="hidden md:flex ml-6">
-              <NavigationMenuDemo />
+              <NavigationMenuView />
             </div>
           </div>
 
