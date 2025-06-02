@@ -1,14 +1,10 @@
-## Hackathon LUMX.
-
-<div align="center">
-    <img src="https://cdn.discordapp.com/attachments/1235359156743962746/1236793323981766748/image.png?ex=66394d0a&is=6637fb8a&hm=bd689fa974be629f66201fdd3f4053c428fe51e79c8dad7e5bbb219591a0d2ae&" alt="Fidz Logo">
-</div>
+## HackaNation.
 
 ---
 
-# Fidz: The one and only fidelity program you will ever need!  
+# SeniorFi: We connect investors with institutions that care for lives
 
-> _TEAM NewZero: Hackathon Lumx
+> _TEAM SeniorFi: HackaNation
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Mobile-blue)
