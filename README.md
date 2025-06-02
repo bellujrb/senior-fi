@@ -96,7 +96,7 @@ senior-fi
 
 ---
 
-## 🛠 Tech Stack Web
+## 🛠 Tech Stack Front-end
 
 ### Design Patterns
 - Component Pattern (clear separation of responsibilities)  
