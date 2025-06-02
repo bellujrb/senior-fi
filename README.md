@@ -89,8 +89,7 @@ senior-fi
 - `front-end`
     - Frontend Application
 - `blockchain`
-    - Blockchain Application: Our solution is built on the **BNB Chain**, a high-performance blockchain known for its scalability, low transaction fees, and wide adoption. By leveraging BNB Chain, we ensure fast, transparent, and cost-effective tokenization of receivables. All transactions — from token issuance to settlement — are executed via smart contracts, providing a secure and decentralized infrastructure without relying on banks or intermediaries.
-
+    - Blockchain Application
 - `README.md`
     - Documentation Project
 
