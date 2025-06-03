@@ -24,7 +24,7 @@ With its wide adoption and smart contract compatibility, BNB Chain ensures speed
 
 --- 
 
-## 🔗 Smart Contract (BSC Testnet)
+### 🔗 Smart Contract (BSC Testnet)
 
 📄 **Deployed Smart Contract on Binance Smart Chain (Testnet)**  
 🔗 [`0xcb546881881601acd39eB205728c10c128080004`](https://testnet.bscscan.com/address/0xcb546881881601acd39eB205728c10c128080004#code)
