@@ -19,9 +19,12 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
   const router = useRouter();
 
   const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<string>("");
 
   const connectWallet = async () => {
+    setConnectionStatus("Iniciando conexão com carteira...");
     if (typeof window.ethereum === "undefined") {
+      setConnectionStatus("MetaMask não encontrada");
       toast({
         title: "MetaMask não encontrada",
         description: "Por favor, instale a MetaMask para continuar.",
@@ -31,9 +34,10 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
     }
   
     setIsConnecting(true);
+    setConnectionStatus("Solicitando conexão da carteira...");
 
     try {
-      // Solicita conexão da conta
+      setConnectionStatus("Solicitando contas...");
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -43,22 +47,21 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
       }
 
       const address = accounts[0];
-      console.log("Conta conectada:", address);
+      setConnectionStatus("Conta conectada, verificando rede...");
   
-      // ID da rede BSC Testnet (hexadecimal)
-      const chainId = "0x61"; // 97 decimal
+      const chainId = "0x61";
   
       try {
-        // Tenta mudar para a BSC Testnet
+        setConnectionStatus("Trocando para a rede BSC Testnet...");
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId }],
         });
-        console.log("Rede trocada para BSC Testnet");
+        setConnectionStatus("Rede BSC Testnet configurada");
       } catch (switchError: any) {
-        // Se a rede ainda não estiver adicionada, adiciona
         if (switchError.code === 4902) {
           try {
+            setConnectionStatus("Adicionando rede BSC Testnet...");
             await window.ethereum.request({
               method: "wallet_addEthereumChain",
               params: [
@@ -75,9 +78,9 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
                 },
               ],
             });
-            console.log("Rede BSC Testnet adicionada com sucesso");
+            setConnectionStatus("Rede BSC Testnet adicionada com sucesso");
           } catch (addError) {
-            console.error("Erro ao adicionar rede:", addError);
+            setConnectionStatus("Erro ao adicionar rede");
             toast({
               title: "Erro na rede",
               description: "Não foi possível adicionar a rede BSC Testnet.",
@@ -87,7 +90,7 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
             return;
           }
         } else {
-          console.error("Erro ao trocar de rede:", switchError);
+          setConnectionStatus("Erro ao trocar de rede");
           toast({
             title: "Erro na rede",
             description: "Não foi possível trocar para a rede BSC Testnet.",
@@ -98,13 +101,12 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
         }
       }
 
-      // Obter saldo da carteira
+      setConnectionStatus("Obtendo saldo da carteira...");
       const provider = new ethers.BrowserProvider(window.ethereum);
       const balance = await provider.getBalance(address);
       const balanceInBNB = ethers.formatEther(balance);
       const formattedBalance = parseFloat(balanceInBNB).toFixed(4);
 
-      // Salvar informações no localStorage
       const walletData = {
         address,
         balance: formattedBalance,
@@ -113,20 +115,18 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
       };
       
       localStorage.setItem("wallet-data", JSON.stringify(walletData));
-
-      // Chamar callback de conexão
       onConnect(address, formattedBalance);
 
+      setConnectionStatus("Carteira conectada com sucesso!");
       toast({
         title: "Carteira conectada!",
         description: `Conectado com sucesso: ${address.slice(0, 6)}...${address.slice(-4)}`,
       });
 
-      // Fechar modal
       onClose();
 
     } catch (err: any) {
-      console.error("Erro ao conectar carteira:", err);
+      setConnectionStatus(`Erro: ${err.message || "Não foi possível conectar a carteira"}`);
       toast({
         title: "Erro na conexão",
         description: err.message || "Não foi possível conectar a carteira.",
@@ -137,12 +137,10 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
     }
   };
 
-  // Listener para mudanças de conta
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
-          // Usuário desconectou a carteira
           localStorage.removeItem("wallet-data");
           toast({
             title: "Carteira desconectada",
@@ -152,7 +150,6 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
       };
 
       const handleChainChanged = (chainId: string) => {
-        // Recarregar a página quando a rede for alterada
         window.location.reload();
       };
 
@@ -160,7 +157,7 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
       window.ethereum.on('chainChanged', handleChainChanged);
 
       return () => {
-        if (window.ethereum.removeListener) {
+        if (typeof window.ethereum !== "undefined" && window.ethereum.removeListener) {
           window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
           window.ethereum.removeListener('chainChanged', handleChainChanged);
         }
@@ -185,6 +182,12 @@ export function ConnectWalletModal({ isOpen, onClose, onConnect }: ConnectWallet
               {isConnecting ? "Conectando..." : "Conectar MetaMask"}
             </Button>
             
+            {connectionStatus && (
+              <p className="text-sm text-center text-muted-foreground">
+                {connectionStatus}
+              </p>
+            )}
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
