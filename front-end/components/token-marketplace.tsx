@@ -73,7 +73,16 @@ export function TokenMarketplace() {
   const handlePurchase = (token: Opportunity) => {
     if (typeof window === 'undefined') return;
     
-    if (!window.localStorage.getItem("wallet-connected")) {
+    const walletData = localStorage.getItem("wallet-data");
+    if (!walletData) {
+      toast.error("Conecte sua carteira", {
+        description: "É necessário conectar uma carteira para investir.",
+      });
+      return;
+    }
+
+    const { connected } = JSON.parse(walletData);
+    if (!connected) {
       toast.error("Conecte sua carteira", {
         description: "É necessário conectar uma carteira para investir.",
       });
