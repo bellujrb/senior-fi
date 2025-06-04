@@ -7,10 +7,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wallet, Search, Download } from "lucide-react";
+import { Wallet, Search, Download, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AddBalanceModal } from "@/components/add-balance-modal";
 import { toast } from "sonner";
+import { ethers } from 'ethers';
+import { useToast } from "@/hooks/use-toast";
+import { ConnectWalletModal } from "@/components/connect-wallet-modal";
+import { cn } from "@/lib/utils";
 
 interface Token {
   id: string;
@@ -28,6 +32,13 @@ interface Portfolio {
   tokens: Token[];
 }
 
+interface WalletData {
+  address: string;
+  balance: string;
+  connected: boolean;
+  timestamp: number;
+}
+
 export default function Portfolio() {
   const [portfolio, setPortfolio] = useState<Portfolio>({
     totalBalance: "0,00",
@@ -37,22 +48,137 @@ export default function Portfolio() {
     tokens: []
   });
   const [showAddBalanceModal, setShowAddBalanceModal] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [address, setAddress] = useState("");
+  const [balance, setBalance] = useState("0.0000");
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
+
+  const loadWalletData = () => {
+    try {
+      const walletDataString = localStorage.getItem("wallet-data");
+      if (walletDataString) {
+        const walletData: WalletData = JSON.parse(walletDataString);
+        
+        const isDataFresh = Date.now() - walletData.timestamp < 24 * 60 * 60 * 1000;
+        
+        if (walletData.connected && isDataFresh) {
+          setConnected(true);
+          setAddress(walletData.address);
+          setBalance(walletData.balance);
+          return true;
+        } else {
+          localStorage.removeItem("wallet-data");
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar dados da carteira:", error);
+      localStorage.removeItem("wallet-data");
+    }
+    return false;
+  };
+
+  const updateWalletData = async (walletAddress: string) => {
+    try {
+      if (!window.ethereum) {
+        throw new Error("MetaMask não encontrada");
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider);
+      const balance = await provider.getBalance(walletAddress);
+      const balanceInBNB = ethers.formatEther(balance);
+      const formattedBalance = parseFloat(balanceInBNB).toFixed(4);
+
+      const walletData: WalletData = {
+        address: walletAddress,
+        balance: formattedBalance,
+        connected: true,
+        timestamp: Date.now()
+      };
+
+      localStorage.setItem("wallet-data", JSON.stringify(walletData));
+      setAddress(walletAddress);
+      setBalance(formattedBalance);
+    } catch (error) {
+      console.error("Erro ao atualizar dados da carteira:", error);
+    }
+  };
+
+  const checkWalletConnection = async () => {
+    if (typeof window.ethereum !== "undefined" && connected) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length === 0) {
+          handleLogout();
+        } else if (accounts[0] !== address) {
+          const newAddress = accounts[0];
+          await updateWalletData(newAddress);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar conexão da carteira:", error);
+      }
+    }
+  };
+
+  const handleWalletConnect = (walletAddress: string, walletBalance: string) => {
+    setConnected(true);
+    setAddress(walletAddress);
+    setBalance(walletBalance);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("wallet-data");
+    setConnected(false);
+    setAddress("");
+    setBalance("0.0000");
+    router.push("/");
+    toast({
+      title: "Carteira desconectada",
+      description: "Sua carteira foi desconectada com sucesso.",
+    });
+  };
+
+  const refreshBalance = async () => {
+    if (!connected || !address) return;
+    
+    setIsRefreshing(true);
+    try {
+      await updateWalletData(address);
+      toast({
+        title: "Saldo atualizado",
+        description: "O saldo da sua carteira foi atualizado com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao atualizar",
+        description: "Não foi possível atualizar o saldo da carteira.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    // Verifica se está logado
-    const isConnected = window.localStorage.getItem("wallet-connected");
-    if (!isConnected) {
-      router.push("/");
-      return;
-    }
+    loadWalletData();
+  }, []);
 
+  useEffect(() => {
+    if (connected) {
+      checkWalletConnection();
+      const interval = setInterval(checkWalletConnection, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [connected, address]);
+
+  useEffect(() => {
     // Carrega o portfolio do localStorage
     const savedPortfolio = localStorage.getItem("portfolio");
     if (savedPortfolio) {
       setPortfolio(JSON.parse(savedPortfolio));
     }
-  }, [router]);
+  }, []);
 
   const handleAddBalance = (amount: string) => {
     const portfolio = JSON.parse(localStorage.getItem("portfolio") || JSON.stringify({
@@ -108,6 +234,21 @@ export default function Portfolio() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Saldo investido</span>
                   <span>R$ {portfolio.investedBalance}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Saldo BNB</span>
+                  <div className="flex items-center gap-2">
+                    <span>{balance} BNB</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={refreshBalance}
+                      disabled={isRefreshing}
+                    >
+                      <RefreshCw className={cn("h-3 w-3", isRefreshing && "animate-spin")} />
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
@@ -204,6 +345,12 @@ export default function Portfolio() {
         isOpen={showAddBalanceModal}
         onClose={() => setShowAddBalanceModal(false)}
         onAddBalance={handleAddBalance}
+      />
+
+      <ConnectWalletModal 
+        isOpen={showWalletModal} 
+        onClose={() => setShowWalletModal(false)}
+        onConnect={handleWalletConnect}
       />
 
       <Footer />
