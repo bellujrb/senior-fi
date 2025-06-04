@@ -83,20 +83,43 @@ All operations are transparently, immutably, and automatically recorded via smar
 ```
 senior-fi
 ├── front-end
-│   └── ...
+│   └── app
+│       └── marketplace
+│           └── page.tsx
+│       └── portfolio
+│           └── page.tsx
+│       └── recebivel
+│           └── page.tsx
+│   └── components
+│       └── connect-wallet-modal.tsx
 ├── blockchain
-│   └── ...
+│   └── contracts
+│       └── RecebivelFactory.sol
+│       └── RecebivelOracle.sol
+│   └── ignition
+│       └── ...
+│   └── tests
+│       └── Recebivel.test.js
 ├── README.MD
-│   └── ...
 ```
 ---
 
-#### `hackathon-lumx`
+#### `senior-fi`
 
 - `front-end`
     - Frontend Application
+- `front-end/components/connect-wallet-modal.tsx`
+    - Modal component for connecting Web3 wallets. Uses libraries like rainbowkit or web3modal to handle MetaMask, WalletConnect, etc.
 - `blockchain`
     - Blockchain Application
+- `blockchain/contracts/RecebivelFactory.sol`
+    - Factory contract for creating new receivable instances (tokenized ERC-20). Ensures minting control and registry.
+- `blockchain/contracts/contracts/RecebivelOracle.sol`
+    - On-chain oracle contract designed to assign credit risk or scores to receivables. May be mocked for MVP but designed to integrate with external financial data sources.
+- `blockchain/ignition`
+    - Deployment scripts using Hardhat Ignition plugin. Automates the deployment and initialization of the smart contracts.
+- `tests/Recebivel.test.js`
+    - Unit tests for the Recebivel system written in JavaScript with Hardhat + Chai. Covers deployment, minting, transfers, and edge cases.
 - `README.md`
     - Documentation Project
 
