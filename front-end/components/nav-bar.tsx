@@ -221,7 +221,7 @@ export function NavBar() {
                           </Button>
                         </div>
                       </div>
-                      <p className="text-sm font-mono bg-muted p-2 rounded">{address}</p>
+                      <p className="text-sm font-mono bg-muted p-2 rounded break-all">{address}</p>
                       
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Saldo</span>
