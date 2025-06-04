@@ -140,6 +140,7 @@ senior-fi
 - **Tema:** `next-themes`  
 - **Notificações:** `sonner`  
 - **Core:** `next`, `react`, `react-dom`, `typescript`
+- **Web3:** `ethers`
 
 ### Architecture 
 - Next.js 13+ with App Router  
