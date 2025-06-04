@@ -37,14 +37,12 @@ export function NavBar() {
   const router = useRouter();
   const { toast } = useToast();
 
-  // Função para carregar dados da carteira do localStorage
   const loadWalletData = () => {
     try {
       const walletDataString = localStorage.getItem("wallet-data");
       if (walletDataString) {
         const walletData: WalletData = JSON.parse(walletDataString);
         
-        // Verificar se os dados não são muito antigos (opcional - 24 horas)
         const isDataFresh = Date.now() - walletData.timestamp < 24 * 60 * 60 * 1000;
         
         if (walletData.connected && isDataFresh) {
@@ -53,7 +51,6 @@ export function NavBar() {
           setBalance(walletData.balance);
           return true;
         } else {
-          // Limpar dados antigos
           localStorage.removeItem("wallet-data");
         }
       }
@@ -64,21 +61,17 @@ export function NavBar() {
     return false;
   };
 
-  // Carregar dados da carteira ao montar o componente
   useEffect(() => {
     loadWalletData();
   }, []);
 
-  // Verificar se a carteira ainda está conectada no MetaMask
   const checkWalletConnection = async () => {
     if (typeof window.ethereum !== "undefined" && connected) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
         if (accounts.length === 0) {
-          // MetaMask foi desconectado
           handleLogout();
         } else if (accounts[0] !== address) {
-          // Conta foi alterada
           const newAddress = accounts[0];
           await updateWalletData(newAddress);
         }
@@ -88,10 +81,12 @@ export function NavBar() {
     }
   };
 
-  // Atualizar dados da carteira
   const updateWalletData = async (walletAddress: string) => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!window.ethereum) {
+        throw new Error("MetaMask não encontrada");
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider);
       const balance = await provider.getBalance(walletAddress);
       const balanceInBNB = ethers.formatEther(balance);
       const formattedBalance = parseFloat(balanceInBNB).toFixed(4);
@@ -111,23 +106,20 @@ export function NavBar() {
     }
   };
 
-  // Verificar conexão periodicamente
   useEffect(() => {
     if (connected) {
       checkWalletConnection();
-      const interval = setInterval(checkWalletConnection, 30000); // Verificar a cada 30 segundos
+      const interval = setInterval(checkWalletConnection, 30000);
       return () => clearInterval(interval);
     }
   }, [connected, address]);
 
-  // Handler para quando a carteira for conectada
   const handleWalletConnect = (walletAddress: string, walletBalance: string) => {
     setConnected(true);
     setAddress(walletAddress);
     setBalance(walletBalance);
   };
 
-  // Handler para logout
   const handleLogout = () => {
     localStorage.removeItem("wallet-data");
     setConnected(false);
@@ -140,7 +132,6 @@ export function NavBar() {
     });
   };
 
-  // Copiar endereço para clipboard
   const copyAddress = () => {
     navigator.clipboard.writeText(address);
     toast({
@@ -149,7 +140,6 @@ export function NavBar() {
     });
   };
 
-  // Atualizar saldo manualmente
   const refreshBalance = async () => {
     if (!connected || !address) return;
     
@@ -171,7 +161,6 @@ export function NavBar() {
     }
   };
 
-  // Formatar endereço para exibição
   const formatAddress = (addr: string) => {
     if (!addr) return "";
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
