@@ -20,35 +20,26 @@ export default function CreateRecebivel() {
   
 
   const createToken = async () => {
-
     if (!window.ethereum) {
       alert("Metamask não detectado");
-      return;
-    }
-  
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-  
-    await provider.send("eth_requestAccounts", []);
-
-    const signer = provider.getSigner();
-
-    const mainContract = new ethers.Contract(ORACLE_ADDRESS, ORACLE_ABI, signer);
-
-    const oracleAddress = await mainContract.oracle();
-    const oracleContract = new ethers.Contract(oracleAddress, ORACLE_ABI, signer);
-
-    await oracleContract.updateILPIRating("0xB4A2dF10f6308f2040d727539Fc9D436686c3F91", 7);
-
-
-    if (!window.ethereum) {
-      setStatus("MetaMask não encontrada");
       return;
     }
 
     try {
       setStatus("Conectando à carteira...");
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!window.ethereum) {
+        throw new Error("MetaMask não encontrada");
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider);
       const signer = await provider.getSigner();
+
+      // Update oracle rating
+      const mainContract = new ethers.Contract(ORACLE_ADDRESS, ORACLE_ABI, signer);
+      const oracleAddress = await mainContract.oracle();
+      const oracleContract = new ethers.Contract(oracleAddress, ORACLE_ABI, signer);
+      await oracleContract.updateILPIRating("0xB4A2dF10f6308f2040d727539Fc9D436686c3F91", 7);
+
+      setStatus("Criando token...");
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
       const discountWei = ethers.parseEther(discountValue);
