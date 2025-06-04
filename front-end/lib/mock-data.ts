@@ -43,7 +43,7 @@ export const bestOpportunities: Opportunity[] = [
   {
     id: "001",
     name: "ILPI São Vicente",
-    institution: "São Vicente Care",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/6647037/pexels-photo-6647037.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Em captação",
     regulation: "88",
@@ -60,7 +60,7 @@ export const bestOpportunities: Opportunity[] = [
   {
     id: "002",
     name: "Lar dos Idosos",
-    institution: "Nagro Securitizadora S/A",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/339620/pexels-photo-339620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Em captação",
     regulation: "88",
@@ -77,7 +77,7 @@ export const bestOpportunities: Opportunity[] = [
   {
     id: "003",
     name: "Casa Melhor Idade",
-    institution: "M3 Lending",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/7551704/pexels-photo-7551704.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Finalizada",
     regulation: "88",
@@ -98,7 +98,7 @@ export const allTokens: Opportunity[] = [
   {
     id: "004",
     name: "ILPI Boa Esperança",
-    institution: "Boa Esperança Care",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/7551622/pexels-photo-7551622.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Em captação",
     regulation: "88",
@@ -115,7 +115,7 @@ export const allTokens: Opportunity[] = [
   {
     id: "005",
     name: "Residencial Sênior",
-    institution: "Sênior Invest",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/7551692/pexels-photo-7551692.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Em captação",
     regulation: "88",
@@ -132,7 +132,7 @@ export const allTokens: Opportunity[] = [
   {
     id: "006",
     name: "Casa Aconchego",
-    institution: "Aconchego Vida",
+    institution: "SocialFi",
     logo: "https://images.pexels.com/photos/7551727/pexels-photo-7551727.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     status: "Finalizada",
     regulation: "88",
