@@ -21,7 +21,6 @@ import {
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { allTokens, type Opportunity } from "@/lib/mock-data";
-import { useRouter } from "next/navigation";
 import { RiskAnalysisModal } from "@/components/risk-analysis-modal";
 
 interface PortfolioToken {
