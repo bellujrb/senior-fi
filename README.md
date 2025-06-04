@@ -118,7 +118,7 @@ senior-fi
     - On-chain oracle contract designed to assign credit risk or scores to receivables. May be mocked for MVP but designed to integrate with external financial data sources.
 - `blockchain/ignition`
     - Deployment scripts using Hardhat Ignition plugin. Automates the deployment and initialization of the smart contracts.
-- `tests/Recebivel.test.js`
+- `blockchain/tests/Recebivel.test.js`
     - Unit tests for the Recebivel system written in JavaScript with Hardhat + Chai. Covers deployment, minting, transfers, and edge cases.
 - `README.md`
     - Documentation Project
