@@ -26,8 +26,9 @@ With its wide adoption and smart contract compatibility, BNB Chain ensures speed
 
 ### 🔗 Smart Contract on BNB Chain Testnet
 
-📄 [`0xcb546881881601acd39eB205728c10c128080004`](https://testnet.bscscan.com/address/0xcb546881881601acd39eB205728c10c128080004#code)  
-✅ Verified · Deployed on **BNB Smart Chain (Testnet)**
+📄 [`0xC95c247A1c0B28f342Cf532B0fD50Cbf9FbCABb1`](https://testnet.bscscan.com/address/0xC95c247A1c0B28f342Cf532B0fD50Cbf9FbCABb1#code)  
+✅ Verified · Deployed on **BNB Smart Chain (Testnet)**  
+🔐 Includes the **Receivable Factory** and integrated **Oracle** for on-chain data validation.
 
 ---
 
